@@ -1,0 +1,13 @@
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\bin\Release\net8.0\EnterpriseApp.Domain.deps.json
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\bin\Release\net8.0\EnterpriseApp.Domain.dll
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\bin\Release\net8.0\EnterpriseApp.Domain.pdb
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\bin\Release\net8.0\EnterpriseApp.Domain.xml
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.AssemblyInfoInputs.cache
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.AssemblyInfo.cs
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.csproj.CoreCompileInputs.cache
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.dll
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\refint\EnterpriseApp.Domain.dll
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.xml
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\EnterpriseApp.Domain.pdb
+C:\Users\HP\Downloads\EnterpriseApp\EnterpriseApp\src\EnterpriseApp.Domain\obj\Release\net8.0\ref\EnterpriseApp.Domain.dll

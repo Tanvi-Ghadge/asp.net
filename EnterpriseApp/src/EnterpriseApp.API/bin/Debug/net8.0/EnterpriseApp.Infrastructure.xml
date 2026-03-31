@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EnterpriseApp.Infrastructure</name>
+    </assembly>
+    <members>
+        <member name="T:EnterpriseApp.Infrastructure.Caching.RedisCacheService">
+            <summary>
+            Redis-backed distributed cache implementation.
+            Uses StackExchange.Redis for connection management and JSON serialization for values.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Caching.RedisCacheService.#ctor(StackExchange.Redis.IConnectionMultiplexer,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Caching.RedisCacheService})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Caching.RedisCacheService"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Caching.RedisCacheService.GetAsync``1(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Caching.RedisCacheService.SetAsync``1(System.String,``0,System.TimeSpan,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Caching.RedisCacheService.RemoveAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Caching.RedisRateLimitingMiddleware">
+            <summary>
+            Redis-backed distributed rate limiting middleware using a fixed-window counter.
+            Each client IP is tracked across all pods and proxies once normalized.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Caching.RedisRateLimitingMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,StackExchange.Redis.IConnectionMultiplexer,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Caching.RedisRateLimitingMiddleware})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Caching.RedisRateLimitingMiddleware"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Caching.RedisRateLimitingMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>Evaluates the rate limit for the incoming request.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Logging.SerilogConfiguration">
+            <summary>
+            Configures Serilog for structured JSON logging with:
+            - Correlation ID enrichment
+            - Environment-controlled log levels
+            - Debug logs gated behind configuration (never active in production unless explicitly enabled)
+            - Sensitive field masking
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Logging.SerilogConfiguration.UseEnterpriseLogging(Microsoft.Extensions.Hosting.IHostBuilder)">
+            <summary>
+            Configures Serilog on the provided <see cref="T:Microsoft.Extensions.Hosting.IHostBuilder"/>.
+            Log level is controlled via appsettings — debug output is suppressed unless
+            Serilog:MinimumLevel:Default is explicitly set to "Debug" in configuration.
+            </summary>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Outbox.OutboxProcessor">
+            <summary>
+            Background service that polls the OutboxMessages table and publishes pending events.
+            Uses the Outbox Pattern to guarantee at-least-once delivery without distributed transactions.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Outbox.OutboxProcessor.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Outbox.OutboxProcessor})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Outbox.OutboxProcessor"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Outbox.OutboxProcessor.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext">
+            <summary>
+            EF Core DbContext for write operations only. All reads should go through Dapper query services.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext"/>.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.Products">
+            <summary>Products write set.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.Orders">
+            <summary>Orders write set.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.OrderItems">
+            <summary>Order items write set.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.OutboxMessages">
+            <summary>Outbox messages for distributed event publishing.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.RefreshTokens">
+            <summary>Refresh tokens for JWT rotation.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContextAdapter">
+            <summary>
+            Adapter that exposes only the operations the Application layer needs from EF Core,
+            without depending on Infrastructure's concrete DbContext type.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContextAdapter.#ctor(EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext)">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContextAdapter"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContextAdapter.BeginTransactionAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContextAdapter.AddOutboxMessageAsync(EnterpriseApp.Domain.Entities.OutboxMessage,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Context.AppDbContextAdapter.SaveChangesAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository">
+            <summary>
+            EF Core implementation of <see cref="T:EnterpriseApp.Domain.Repositories.IProductRepository"/>.
+            WRITE operations ONLY — reads must use the Dapper query service.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository.#ctor(EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext)">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository.AddAsync(EnterpriseApp.Domain.Entities.Product,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository.Update(EnterpriseApp.Domain.Entities.Product)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.ProductRepository.SaveChangesAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Persistence.Repositories.OrderRepository">
+            <summary>
+            EF Core implementation of <see cref="T:EnterpriseApp.Domain.Repositories.IOrderRepository"/>.
+            WRITE operations ONLY — reads must use the Dapper query service.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.OrderRepository.#ctor(EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext)">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Persistence.Repositories.OrderRepository"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.OrderRepository.AddAsync(EnterpriseApp.Domain.Entities.Order,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.OrderRepository.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.OrderRepository.SaveChangesAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Persistence.Repositories.RefreshTokenRepository">
+            <summary>
+            EF Core implementation of <see cref="T:EnterpriseApp.Domain.Repositories.IRefreshTokenRepository"/>.
+            WRITE operations ONLY.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.RefreshTokenRepository.#ctor(EnterpriseApp.Infrastructure.Persistence.Context.AppDbContext)">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Persistence.Repositories.RefreshTokenRepository"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.RefreshTokenRepository.AddAsync(EnterpriseApp.Domain.Entities.RefreshToken,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.RefreshTokenRepository.GetByHashAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Persistence.Repositories.RefreshTokenRepository.SaveChangesAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Queries.ProductQueryService">
+            <summary>
+            Dapper-based READ-ONLY query service for Products.
+            NEVER uses EF Core — raw SQL only via Dapper.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Queries.ProductQueryService.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Queries.ProductQueryService})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Queries.ProductQueryService"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Queries.ProductQueryService.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Queries.ProductQueryService.GetPagedAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Queries.OrderQueryService">
+            <summary>
+            Dapper-based READ-ONLY query service for Orders.
+            NEVER uses EF Core — raw SQL only via Dapper.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Queries.OrderQueryService.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Queries.OrderQueryService})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Queries.OrderQueryService"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Queries.OrderQueryService.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Security.AzureKeyVaultSecretProvider">
+            <summary>
+            Azure Key Vault implementation of <see cref="T:EnterpriseApp.Application.Interfaces.ISecretProvider"/>.
+            All secrets (JWT signing keys, connection strings, etc.) are retrieved from Key Vault.
+            No secrets are stored in appsettings.json or environment variables.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Security.AzureKeyVaultSecretProvider.#ctor(Azure.Security.KeyVault.Secrets.SecretClient,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Security.AzureKeyVaultSecretProvider})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Security.AzureKeyVaultSecretProvider"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Security.AzureKeyVaultSecretProvider.GetSecretAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Security.ConfigurationSecretProvider">
+            <summary>
+            Local-development secret provider backed by configuration/environment variables.
+            This allows the app to run without Azure Key Vault.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Security.ConfigurationSecretProvider.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Security.ConfigurationSecretProvider})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Security.ConfigurationSecretProvider"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Security.ConfigurationSecretProvider.GetSecretAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Infrastructure.Storage.AzureBlobStorageService">
+            <summary>
+            Azure Blob Storage implementation of <see cref="T:EnterpriseApp.Application.Interfaces.IBlobStorageService"/>.
+            Streams data directly to blob — no full memory buffering.
+            Connection strings are resolved via <see cref="T:EnterpriseApp.Application.Interfaces.ISecretProvider"/>, never from appsettings.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Storage.AzureBlobStorageService.#ctor(Azure.Storage.Blobs.BlobServiceClient,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Infrastructure.Storage.AzureBlobStorageService})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Infrastructure.Storage.AzureBlobStorageService"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Storage.AzureBlobStorageService.UploadStreamAsync(System.IO.Stream,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Infrastructure.Storage.AzureBlobStorageService.DeleteAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EnterpriseApp.Domain</name>
+    </assembly>
+    <members>
+        <member name="T:EnterpriseApp.Domain.Common.BaseEntity">
+            <summary>
+            Base entity providing common audit fields and concurrency control via RowVersion.
+            All domain entities should inherit from this class.
+            </summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Common.BaseEntity.Id">
+            <summary>Gets or sets the unique identifier for this entity.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Common.BaseEntity.CreatedAtUtc">
+            <summary>Gets or sets the UTC timestamp when the entity was created.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Common.BaseEntity.UpdatedAtUtc">
+            <summary>Gets or sets the UTC timestamp when the entity was last modified.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Common.BaseEntity.RowVersion">
+            <summary>Gets or sets the row version used for optimistic concurrency control.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Common.BaseEntity.MarkAsUpdated">
+            <summary>Marks the entity as modified by updating the timestamp.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Entities.Order">
+            <summary>Represents an order placed by a customer.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Order.CustomerId">
+            <summary>Gets the customer identifier.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Order.Status">
+            <summary>Gets the order status.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Order.TotalAmount">
+            <summary>Gets the total amount for the order.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Order.Items">
+            <summary>Gets the read-only collection of order items.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Order.Create(System.Guid)">
+            <summary>Factory method to create a new Order.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Order.AddItem(System.Guid,System.String,System.Int32,System.Decimal)">
+            <summary>Adds an item to the order and recalculates the total.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Order.Confirm">
+            <summary>Marks the order as confirmed.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Entities.OrderItem">
+            <summary>Represents a single line item within an order.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OrderItem.OrderId">
+            <summary>Gets the parent order identifier.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OrderItem.ProductId">
+            <summary>Gets the product identifier.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OrderItem.ProductName">
+            <summary>Gets the product name at time of order.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OrderItem.Quantity">
+            <summary>Gets the quantity ordered.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OrderItem.UnitPrice">
+            <summary>Gets the unit price at time of order.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OrderItem.TotalPrice">
+            <summary>Gets the total price for this line item.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Entities.OrderStatus">
+            <summary>Represents the lifecycle status of an order.</summary>
+        </member>
+        <member name="F:EnterpriseApp.Domain.Entities.OrderStatus.Pending">
+            <summary>Order is created but not yet confirmed.</summary>
+        </member>
+        <member name="F:EnterpriseApp.Domain.Entities.OrderStatus.Confirmed">
+            <summary>Order has been confirmed.</summary>
+        </member>
+        <member name="F:EnterpriseApp.Domain.Entities.OrderStatus.Shipped">
+            <summary>Order has been shipped.</summary>
+        </member>
+        <member name="F:EnterpriseApp.Domain.Entities.OrderStatus.Delivered">
+            <summary>Order has been delivered to the customer.</summary>
+        </member>
+        <member name="F:EnterpriseApp.Domain.Entities.OrderStatus.Cancelled">
+            <summary>Order has been cancelled.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Entities.OutboxMessage">
+            <summary>Represents an outbox message used in the Outbox Pattern for reliable distributed messaging.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.Id">
+            <summary>Gets the unique identifier for the outbox message.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.Type">
+            <summary>Gets the message type (fully qualified or short name).</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.Payload">
+            <summary>Gets the serialized payload of the domain event.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.CreatedAtUtc">
+            <summary>Gets the UTC timestamp when the message was created.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.ProcessedAtUtc">
+            <summary>Gets the UTC timestamp when the message was processed (null if pending).</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.ErrorMessage">
+            <summary>Gets the error message if processing failed.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.OutboxMessage.RetryCount">
+            <summary>Gets the number of times processing was attempted.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.OutboxMessage.Create(System.String,System.String)">
+            <summary>Factory method to create a new OutboxMessage.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.OutboxMessage.MarkAsProcessed">
+            <summary>Marks the message as successfully processed.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.OutboxMessage.MarkAsFailed(System.String)">
+            <summary>Marks the message as failed with the given error detail.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Entities.Product">
+            <summary>
+            Represents a product in the catalog.
+            </summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Product.Name">
+            <summary>Gets the product name.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Product.Description">
+            <summary>Gets the product description.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Product.Price">
+            <summary>Gets the product price.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Product.StockQuantity">
+            <summary>Gets the available stock quantity.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.Product.IsActive">
+            <summary>Gets whether the product is active.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Product.Create(System.String,System.String,System.Decimal,System.Int32)">
+            <summary>
+            Creates a new Product instance using factory method.
+            </summary>
+            <param name="name">Product name.</param>
+            <param name="description">Product description.</param>
+            <param name="price">Product price.</param>
+            <param name="stockQuantity">Initial stock quantity.</param>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Product.Update(System.String,System.String,System.Decimal)">
+            <summary>Updates product details.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Product.DeductStock(System.Int32)">
+            <summary>Decrements stock by the given quantity.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.Product.Deactivate">
+            <summary>Deactivates the product.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Entities.RefreshToken">
+            <summary>Represents a JWT refresh token for a user.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.Id">
+            <summary>Gets the unique identifier.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.UserId">
+            <summary>Gets the user identifier this token belongs to.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.TokenHash">
+            <summary>Gets the hashed token value.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.ExpiresAtUtc">
+            <summary>Gets the UTC expiry date.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.IsRevoked">
+            <summary>Gets whether the token has been revoked.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.CreatedAtUtc">
+            <summary>Gets the UTC time when the token was created.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.RefreshToken.Create(System.Guid,System.String,System.DateTime)">
+            <summary>Factory method to create a new RefreshToken.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Domain.Entities.RefreshToken.IsActive">
+            <summary>Returns true if the token is still valid.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Entities.RefreshToken.Revoke">
+            <summary>Revokes this refresh token to prevent reuse.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Exceptions.NotFoundException">
+            <summary>Thrown when a requested domain resource is not found.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Exceptions.NotFoundException.#ctor(System.String,System.Object)">
+            <summary>Initializes a NotFoundException for the specified entity and key.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Exceptions.ConcurrencyException">
+            <summary>Thrown when a concurrency conflict is detected during a write operation.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Exceptions.ConcurrencyException.#ctor(System.String)">
+            <summary>Initializes a ConcurrencyException with a message.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Exceptions.DomainException">
+            <summary>Thrown when a business rule or domain invariant is violated.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Exceptions.DomainException.#ctor(System.String)">
+            <summary>Initializes a DomainException with a descriptive message.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Exceptions.UnauthorizedException">
+            <summary>Thrown when the caller is not authorized to perform an operation.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Exceptions.UnauthorizedException.#ctor(System.String)">
+            <summary>Initializes an UnauthorizedException with a message.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Repositories.IProductRepository">
+            <summary>Write-only repository interface for Product entities (EF Core).</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IProductRepository.AddAsync(EnterpriseApp.Domain.Entities.Product,System.Threading.CancellationToken)">
+            <summary>Adds a new product to the store.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IProductRepository.Update(EnterpriseApp.Domain.Entities.Product)">
+            <summary>Updates an existing product in the store.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IProductRepository.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Retrieves a product by its identifier using EF Core tracking.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IProductRepository.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>Saves all pending changes to the database.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Repositories.IOrderRepository">
+            <summary>Write-only repository interface for Order entities (EF Core).</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IOrderRepository.AddAsync(EnterpriseApp.Domain.Entities.Order,System.Threading.CancellationToken)">
+            <summary>Adds a new order.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IOrderRepository.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Retrieves an order with its items by identifier.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IOrderRepository.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>Saves all pending changes to the database.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Domain.Repositories.IRefreshTokenRepository">
+            <summary>Write-only repository interface for RefreshToken entities (EF Core).</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IRefreshTokenRepository.AddAsync(EnterpriseApp.Domain.Entities.RefreshToken,System.Threading.CancellationToken)">
+            <summary>Adds a new refresh token.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IRefreshTokenRepository.GetByHashAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Retrieves an active refresh token by its hash.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Domain.Repositories.IRefreshTokenRepository.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>Saves all pending changes to the database.</summary>
+        </member>
+    </members>
+</doc>

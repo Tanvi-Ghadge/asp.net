@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EnterpriseApp.API</name>
+    </assembly>
+    <members>
+        <member name="T:EnterpriseApp.API.Controllers.HealthController">
+            <summary>
+            Health check endpoint — confirms the service and its dependencies are alive.
+            Used by load balancers, Kubernetes liveness/readiness probes, and monitoring tools.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.HealthController.#ctor(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckService)">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Controllers.HealthController"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.HealthController.GetHealth(System.Threading.CancellationToken)">
+            <summary>
+            Returns the aggregated health status of the service and all registered checks.
+            </summary>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — Healthy or Degraded.
+            503 — Unhealthy.
+            </returns>
+        </member>
+        <member name="T:EnterpriseApp.API.Controllers.V1.AuthController">
+            <summary>
+            Authentication API — version 1.
+            Handles JWT login, refresh token rotation, and token revocation.
+            These endpoints are excluded from HMAC auth and rate limiting.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.AuthController.#ctor(EnterpriseApp.Application.Interfaces.IAuthService,FluentValidation.IValidator{EnterpriseApp.Application.DTOs.LoginRequest},Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Controllers.V1.AuthController})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Controllers.V1.AuthController"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.AuthController.Login(EnterpriseApp.Application.DTOs.LoginRequest,System.Threading.CancellationToken)">
+            <summary>Authenticates a user and returns a JWT access token plus a refresh token.</summary>
+            <param name="request">Login credentials.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — tokens issued.
+            400 — validation failure.
+            401 — invalid credentials.
+            </returns>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.AuthController.RefreshToken(EnterpriseApp.Application.DTOs.RefreshTokenRequest,System.Threading.CancellationToken)">
+            <summary>Issues a new access token using a valid refresh token (token rotation).</summary>
+            <param name="request">Refresh token payload.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — new tokens issued, old refresh token revoked.
+            401 — invalid or expired refresh token.
+            </returns>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.AuthController.RevokeToken(EnterpriseApp.Application.DTOs.RefreshTokenRequest,System.Threading.CancellationToken)">
+            <summary>Revokes a refresh token, preventing it from being used again.</summary>
+            <param name="request">Refresh token to revoke.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — token revoked.
+            404 — token not found.
+            </returns>
+        </member>
+        <member name="T:EnterpriseApp.API.Controllers.V1.FilesController">
+            <summary>
+            File Upload API — version 1.
+            Provides stream-based file upload directly to Azure Blob Storage.
+            Files are never fully buffered in application memory.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.FilesController.#ctor(EnterpriseApp.Application.Interfaces.IBlobStorageService,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Controllers.V1.FilesController})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Controllers.V1.FilesController"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.FilesController.UploadFile(System.Threading.CancellationToken)">
+            <summary>
+            Uploads a file using multipart streaming — no buffering in memory.
+            Validates content type and file size before upload.
+            </summary>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — file uploaded, blob URL returned.
+            400 — invalid file type or size exceeded.
+            401 — unauthenticated.
+            500 — upload failure.
+            </returns>
+        </member>
+        <member name="T:EnterpriseApp.API.Controllers.V1.LimitedStream">
+            <summary>Stream wrapper that enforces a maximum read size and tracks bytes read.</summary>
+        </member>
+        <member name="T:EnterpriseApp.API.Controllers.V1.OrdersController">
+            <summary>
+            Orders API — version 1.
+            Handles order placement with multi-table transaction support (Order + Stock + Outbox).
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.OrdersController.#ctor(EnterpriseApp.Application.Interfaces.IOrderService,FluentValidation.IValidator{EnterpriseApp.Application.DTOs.PlaceOrderRequest},Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Controllers.V1.OrdersController})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Controllers.V1.OrdersController"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.OrdersController.PlaceOrder(EnterpriseApp.Application.DTOs.PlaceOrderRequest,System.Threading.CancellationToken)">
+            <summary>Places a new order for a customer, updating stock atomically.</summary>
+            <param name="request">Order placement payload containing customer ID and line items.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            201 — order created.
+            400 — validation failure or insufficient stock.
+            401 — unauthenticated.
+            404 — one or more products not found.
+            500 — unexpected error.
+            </returns>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.OrdersController.GetOrder(System.Guid,System.Threading.CancellationToken)">
+            <summary>Retrieves a single order by its unique identifier.</summary>
+            <param name="id">The order GUID.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — order found.
+            404 — order not found.
+            401 — unauthenticated.
+            </returns>
+        </member>
+        <member name="T:EnterpriseApp.API.Controllers.V1.ProductsController">
+            <summary>
+            Products API — version 1.
+            Provides CRUD operations for the product catalog.
+            All write operations use EF Core; all reads use Dapper via the query service.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.ProductsController.#ctor(EnterpriseApp.Application.Interfaces.IProductService,FluentValidation.IValidator{EnterpriseApp.Application.DTOs.CreateProductRequest},FluentValidation.IValidator{EnterpriseApp.Application.DTOs.UpdateProductRequest},Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Controllers.V1.ProductsController})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Controllers.V1.ProductsController"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.ProductsController.GetProducts(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>Returns a paged list of active products.</summary>
+            <param name="page">Page number (1-based).</param>
+            <param name="pageSize">Number of items per page (max 100).</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — paged product list.
+            401 — unauthenticated.
+            </returns>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.ProductsController.GetProduct(System.Guid,System.Threading.CancellationToken)">
+            <summary>Returns a single product by its unique identifier.</summary>
+            <param name="id">The product GUID.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — product found.
+            404 — product not found.
+            401 — unauthenticated.
+            </returns>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.ProductsController.CreateProduct(EnterpriseApp.Application.DTOs.CreateProductRequest,System.Threading.CancellationToken)">
+            <summary>Creates a new product in the catalog.</summary>
+            <param name="request">Product creation payload.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            201 — product created, Location header set.
+            400 — validation failure.
+            401 — unauthenticated.
+            </returns>
+        </member>
+        <member name="M:EnterpriseApp.API.Controllers.V1.ProductsController.UpdateProduct(System.Guid,EnterpriseApp.Application.DTOs.UpdateProductRequest,System.Threading.CancellationToken)">
+            <summary>Updates an existing product's name, description, and price.</summary>
+            <param name="id">The product GUID to update.</param>
+            <param name="request">Updated product payload.</param>
+            <param name="cancellationToken">Token to observe for cancellation.</param>
+            <returns>
+            200 — product updated.
+            400 — validation failure.
+            404 — product not found.
+            409 — concurrency conflict.
+            401 — unauthenticated.
+            </returns>
+        </member>
+        <member name="T:EnterpriseApp.API.Extensions.ServiceCollectionExtensions">
+            <summary>Extension methods that register all application services in <c>Program.cs</c>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddDatabase(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers EF Core DbContext.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddRepositories(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Registers all domain repositories (EF Core — write only).</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddQueryServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Registers all Dapper read-only query services.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddApplicationServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Registers all application services.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddValidators(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Registers FluentValidation validators.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddRedis(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers Redis distributed cache and rate limiter.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddJwtAuthentication(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers JWT Bearer authentication.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddBlobStorage(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers Azure Blob Storage client.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddSecretProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers Azure Key Vault secret provider.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddOutboxProcessor(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>Registers the Outbox background processor.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Extensions.ServiceCollectionExtensions.AddEnterpriseHealthChecks(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>Registers health checks for SQL Server and Redis.</summary>
+        </member>
+        <member name="T:EnterpriseApp.API.Middleware.CorrelationIdMiddleware">
+            <summary>
+            Enriches every request with a Correlation ID and logs request start/end with timing.
+            The correlation ID is taken from the incoming X-Correlation-ID header or generated fresh.
+            It is pushed into Serilog's LogContext so all downstream log entries carry it.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Middleware.CorrelationIdMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Middleware.CorrelationIdMiddleware})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Middleware.CorrelationIdMiddleware"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Middleware.CorrelationIdMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>Processes the request, injecting and propagating the correlation ID.</summary>
+        </member>
+        <member name="T:EnterpriseApp.API.Middleware.GlobalExceptionMiddleware">
+            <summary>
+            Global exception handling middleware. Catches all unhandled exceptions and maps them
+            to appropriate HTTP status codes with a uniform response envelope.
+            Internal exception details are never exposed to the client.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Middleware.GlobalExceptionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Middleware.GlobalExceptionMiddleware})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Middleware.GlobalExceptionMiddleware"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Middleware.GlobalExceptionMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>Processes the HTTP request and catches any unhandled exceptions.</summary>
+        </member>
+        <member name="T:EnterpriseApp.API.Middleware.HmacAuthenticationMiddleware">
+            <summary>
+            Validates HMAC-SHA256 signatures on incoming requests.
+            Clients must include:
+              X-Api-Key   — the client's public API key
+              X-Timestamp — Unix timestamp (UTC) within 5-minute window
+              X-Signature — HMAC-SHA256(method + path + timestamp + body, sharedSecret)
+            This prevents replay attacks and message tampering.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Middleware.HmacAuthenticationMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.API.Middleware.HmacAuthenticationMiddleware})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.API.Middleware.HmacAuthenticationMiddleware"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.API.Middleware.HmacAuthenticationMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,EnterpriseApp.Application.Interfaces.ISecretProvider)">
+            <summary>Validates the HMAC signature on the request.</summary>
+        </member>
+    </members>
+</doc>

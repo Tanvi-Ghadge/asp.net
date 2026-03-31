@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EnterpriseApp.Application</name>
+    </assembly>
+    <members>
+        <member name="T:EnterpriseApp.Application.DTOs.CreateProductRequest">
+            <summary>Request payload for creating a new product.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.CreateProductRequest.#ctor(System.String,System.String,System.Decimal,System.Int32)">
+            <summary>Request payload for creating a new product.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.UpdateProductRequest">
+            <summary>Request payload for updating an existing product.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.UpdateProductRequest.#ctor(System.String,System.String,System.Decimal)">
+            <summary>Request payload for updating an existing product.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.ProductDto">
+            <summary>Read model returned for product queries.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.ProductDto.#ctor(System.Guid,System.String,System.String,System.Decimal,System.Int32,System.Boolean,System.DateTime)">
+            <summary>Read model returned for product queries.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.PlaceOrderRequest">
+            <summary>Request payload for placing a new order.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.PlaceOrderRequest.#ctor(System.Guid,System.Collections.Generic.IReadOnlyList{EnterpriseApp.Application.DTOs.OrderItemRequest})">
+            <summary>Request payload for placing a new order.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.OrderItemRequest">
+            <summary>A single item within an order request.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.OrderItemRequest.#ctor(System.Guid,System.Int32)">
+            <summary>A single item within an order request.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.OrderDto">
+            <summary>Read model returned after order is placed.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.OrderDto.#ctor(System.Guid,System.Guid,System.String,System.Decimal,System.DateTime,System.Collections.Generic.IReadOnlyList{EnterpriseApp.Application.DTOs.OrderItemDto})">
+            <summary>Read model returned after order is placed.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.OrderItemDto">
+            <summary>Read model for a single order line item.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.OrderItemDto.#ctor(System.Guid,System.String,System.Int32,System.Decimal,System.Decimal)">
+            <summary>Read model for a single order line item.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.LoginRequest">
+            <summary>Login request payload.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.LoginRequest.#ctor(System.String,System.String)">
+            <summary>Login request payload.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.TokenResponse">
+            <summary>Token response returned on successful authentication.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.TokenResponse.#ctor(System.String,System.String,System.DateTime)">
+            <summary>Token response returned on successful authentication.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.RefreshTokenRequest">
+            <summary>Refresh token request payload.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.RefreshTokenRequest.#ctor(System.String)">
+            <summary>Refresh token request payload.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.FileUploadResponse">
+            <summary>Response returned after a successful file upload.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.FileUploadResponse.#ctor(System.String,System.String,System.Int64,System.String)">
+            <summary>Response returned after a successful file upload.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.DTOs.ApiResponse`1">
+            <summary>Uniform envelope wrapping all API responses.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Application.DTOs.ApiResponse`1.Success">
+            <summary>Indicates whether the operation succeeded.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Application.DTOs.ApiResponse`1.Message">
+            <summary>Human-readable message about the result.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Application.DTOs.ApiResponse`1.Data">
+            <summary>The response payload.</summary>
+        </member>
+        <member name="P:EnterpriseApp.Application.DTOs.ApiResponse`1.TraceId">
+            <summary>Correlation/trace identifier for log correlation.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.ApiResponse`1.Ok(`0,System.String,System.String)">
+            <summary>Creates a successful response with data.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.DTOs.ApiResponse`1.Fail(System.String,System.String)">
+            <summary>Creates a failure response with no data.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IAppDbContext">
+            <summary>
+            Small abstraction over the EF Core DbContext so the Application layer doesn't depend
+            on Infrastructure's concrete EF Core context type.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IAppDbContext.BeginTransactionAsync(System.Threading.CancellationToken)">
+            <summary>Begins a database transaction for the current unit of work.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IAppDbContext.AddOutboxMessageAsync(EnterpriseApp.Domain.Entities.OutboxMessage,System.Threading.CancellationToken)">
+            <summary>Adds an outbox message (to be dispatched by the outbox processor).</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IAppDbContext.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>Saves all pending changes to the database.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IProductService">
+            <summary>Service interface for product operations.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IProductService.CreateProductAsync(EnterpriseApp.Application.DTOs.CreateProductRequest,System.Threading.CancellationToken)">
+            <summary>Creates a new product and returns its read model.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IProductService.UpdateProductAsync(System.Guid,EnterpriseApp.Application.DTOs.UpdateProductRequest,System.Threading.CancellationToken)">
+            <summary>Updates an existing product.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IProductService.GetProductByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Retrieves a product by identifier.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IProductService.GetProductsAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>Returns a paged list of active products.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IOrderService">
+            <summary>Service interface for order operations including multi-table transactions.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IOrderService.PlaceOrderAsync(EnterpriseApp.Application.DTOs.PlaceOrderRequest,System.Threading.CancellationToken)">
+            <summary>Places a new order, deducting stock and recording an outbox event atomically.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IOrderService.GetOrderByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Retrieves an order by its identifier.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IAuthService">
+            <summary>Service interface for JWT authentication and token management.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IAuthService.LoginAsync(EnterpriseApp.Application.DTOs.LoginRequest,System.Threading.CancellationToken)">
+            <summary>Authenticates a user and returns access/refresh tokens.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IAuthService.RefreshTokenAsync(EnterpriseApp.Application.DTOs.RefreshTokenRequest,System.Threading.CancellationToken)">
+            <summary>Rotates a refresh token and issues a new access token.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IAuthService.RevokeTokenAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Revokes a refresh token, preventing further use.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IProductQueryService">
+            <summary>Read-only query interface for products using Dapper.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IProductQueryService.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Returns a product read model by identifier using a raw SQL read path.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IProductQueryService.GetPagedAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>Returns a paged list of products using a raw SQL read path.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IOrderQueryService">
+            <summary>Read-only query interface for orders using Dapper.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IOrderQueryService.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Returns an order with its line items using a raw SQL read path.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.IBlobStorageService">
+            <summary>Blob storage abstraction for file uploads.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IBlobStorageService.UploadStreamAsync(System.IO.Stream,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>Streams a file directly to blob storage without buffering in memory.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.IBlobStorageService.DeleteAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Deletes a blob by its URL or name.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.ICacheService">
+            <summary>Cache service abstraction backed by Redis.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.ICacheService.GetAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>Gets a cached value by key, or null if not present.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.ICacheService.SetAsync``1(System.String,``0,System.TimeSpan,System.Threading.CancellationToken)">
+            <summary>Sets a value in cache with the specified expiry.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.ICacheService.RemoveAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Removes a cached value by key.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Interfaces.ISecretProvider">
+            <summary>Secret provider abstraction — retrieves secrets from a secure vault (e.g., Azure Key Vault, blob-based).</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Interfaces.ISecretProvider.GetSecretAsync(System.String,System.Threading.CancellationToken)">
+            <summary>Retrieves a secret value by its name.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Services.AuthService">
+            <summary>
+            Implements JWT authentication with refresh token rotation.
+            Secrets are retrieved from <see cref="T:EnterpriseApp.Application.Interfaces.ISecretProvider"/>, never from config files.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.AuthService.#ctor(EnterpriseApp.Domain.Repositories.IRefreshTokenRepository,EnterpriseApp.Application.Interfaces.ISecretProvider,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Application.Services.AuthService})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Application.Services.AuthService"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.AuthService.LoginAsync(EnterpriseApp.Application.DTOs.LoginRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.AuthService.RefreshTokenAsync(EnterpriseApp.Application.DTOs.RefreshTokenRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.AuthService.RevokeTokenAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Application.Services.OrderService">
+            <summary>
+            Implements order placement with multi-table transactions (Order + Product stock + Outbox)
+            using EF Core transactions with a single SaveChanges call.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.OrderService.#ctor(EnterpriseApp.Domain.Repositories.IOrderRepository,EnterpriseApp.Domain.Repositories.IProductRepository,EnterpriseApp.Application.Interfaces.IOrderQueryService,EnterpriseApp.Application.Interfaces.IAppDbContext,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Application.Services.OrderService})">
+            <summary>Initializes a new instance of <see cref="T:EnterpriseApp.Application.Services.OrderService"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.OrderService.PlaceOrderAsync(EnterpriseApp.Application.DTOs.PlaceOrderRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.OrderService.GetOrderByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Application.Services.ProductService">
+            <summary>
+            Implements product management operations. Write operations use EF Core via
+            <see cref="T:EnterpriseApp.Domain.Repositories.IProductRepository"/>; reads are delegated to the Dapper-based
+            <see cref="T:EnterpriseApp.Application.Interfaces.IProductQueryService"/>.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.ProductService.#ctor(EnterpriseApp.Domain.Repositories.IProductRepository,EnterpriseApp.Application.Interfaces.IProductQueryService,EnterpriseApp.Application.Interfaces.ICacheService,Microsoft.Extensions.Logging.ILogger{EnterpriseApp.Application.Services.ProductService})">
+            <summary>
+            Initializes a new instance of <see cref="T:EnterpriseApp.Application.Services.ProductService"/>.
+            </summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.ProductService.CreateProductAsync(EnterpriseApp.Application.DTOs.CreateProductRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.ProductService.UpdateProductAsync(System.Guid,EnterpriseApp.Application.DTOs.UpdateProductRequest,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.ProductService.GetProductByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:EnterpriseApp.Application.Services.ProductService.GetProductsAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="T:EnterpriseApp.Application.Validators.CreateProductRequestValidator">
+            <summary>Validates a <see cref="T:EnterpriseApp.Application.DTOs.CreateProductRequest"/> before processing.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Validators.CreateProductRequestValidator.#ctor">
+            <summary>Initializes validation rules for product creation.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Validators.UpdateProductRequestValidator">
+            <summary>Validates an <see cref="T:EnterpriseApp.Application.DTOs.UpdateProductRequest"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Validators.UpdateProductRequestValidator.#ctor">
+            <summary>Initializes validation rules for product updates.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Validators.PlaceOrderRequestValidator">
+            <summary>Validates a <see cref="T:EnterpriseApp.Application.DTOs.PlaceOrderRequest"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Validators.PlaceOrderRequestValidator.#ctor">
+            <summary>Initializes validation rules for placing an order.</summary>
+        </member>
+        <member name="T:EnterpriseApp.Application.Validators.LoginRequestValidator">
+            <summary>Validates a <see cref="T:EnterpriseApp.Application.DTOs.LoginRequest"/>.</summary>
+        </member>
+        <member name="M:EnterpriseApp.Application.Validators.LoginRequestValidator.#ctor">
+            <summary>Initializes validation rules for login.</summary>
+        </member>
+    </members>
+</doc>

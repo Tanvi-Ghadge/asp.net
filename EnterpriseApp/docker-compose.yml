@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+  # ── ASP.NET Core API ──────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=EnterpriseApp;User Id=sa;Password=Your_password123!;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=redis:6379
+      - ConnectionStrings__AzureStorage=UseDevelopmentStorage=true;DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tiqr1D+y3b==;BlobEndpoint=http://azurite:10000/devstoreaccount1;
+      - Jwt__Issuer=https://localhost:8080
+      - Jwt__Audience=https://localhost:8080
+      - Jwt__SigningKey=dev-only-super-secret-key-at-least-32-chars!!
+      # Local-dev secrets (used when KeyVault:Uri is not configured)
+      - Hmac__Secrets__local-dev-key=local-dev-hmac-secret
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      azurite:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - enterprise-net
+
+  # ── SQL Server ────────────────────────────────────────────────────────────────
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - SA_PASSWORD=Your_password123!
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      # The mssql image here includes sqlcmd under `/opt/mssql-tools18/` (not `/opt/mssql-tools/`).
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'Your_password123!' -C -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - enterprise-net
+
+  # ── Redis ─────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - enterprise-net
+
+  # ── Azurite (Azure Blob Storage emulator) ────────────────────────────────────
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"  # Blob
+      - "10001:10001"  # Queue
+      - "10002:10002"  # Table
+    volumes:
+      - azurite-data:/data
+    command: azurite --loose --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
+    networks:
+      - enterprise-net
+
+volumes:
+  sqlserver-data:
+  redis-data:
+  azurite-data:
+
+networks:
+  enterprise-net:
+    driver: bridge

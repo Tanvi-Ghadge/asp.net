@@ -1,0 +1,77 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.cs]
+# ── Naming conventions ────────────────────────────────────────────────────────
+
+# PascalCase: public/protected members, types, methods
+dotnet_naming_rule.public_members_pascal.symbols = public_members
+dotnet_naming_rule.public_members_pascal.style = pascal_case
+dotnet_naming_rule.public_members_pascal.severity = error
+
+dotnet_naming_symbols.public_members.applicable_kinds = class,struct,interface,enum,property,method,event,delegate
+dotnet_naming_symbols.public_members.applicable_accessibilities = public,protected,protected_internal
+
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+# camelCase: local variables, parameters
+dotnet_naming_rule.local_vars_camel.symbols = local_vars
+dotnet_naming_rule.local_vars_camel.style = camel_case
+dotnet_naming_rule.local_vars_camel.severity = error
+
+dotnet_naming_symbols.local_vars.applicable_kinds = local,parameter
+dotnet_naming_symbols.local_vars.applicable_accessibilities = *
+
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+# camelCase with _ prefix: private fields
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = camel_case_underscore
+dotnet_naming_rule.private_fields_underscore.severity = error
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.camel_case_underscore.required_prefix = _
+dotnet_naming_style.camel_case_underscore.capitalization = camel_case
+
+# Interface: must start with I
+dotnet_naming_rule.interfaces_i_prefix.symbols = interfaces
+dotnet_naming_rule.interfaces_i_prefix.style = interface_style
+dotnet_naming_rule.interfaces_i_prefix.severity = error
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+
+dotnet_naming_style.interface_style.required_prefix = I
+dotnet_naming_style.interface_style.capitalization = pascal_case
+
+# ── Code style ────────────────────────────────────────────────────────────────
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+
+csharp_prefer_braces = true:error
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+dotnet_sort_system_directives_first = true
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
+
+# Prefer 'is null' over '== null'
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:error
+
+# Require explicit access modifiers
+dotnet_style_require_accessibility_modifiers = always:error
